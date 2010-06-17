@@ -32,98 +32,69 @@
 
 using namespace scim;
 
-class AvroInstance : public IMEngineInstanceBase
-{
-    friend class AvroFactory;
+class AvroInstance : public IMEngineInstanceBase {
+  friend class AvroFactory;
 
 private:
+  //Conigure scim-avro
 
+  // gedit specific problem fix. If you want to fix gedit OI-kar, OU-kar
+  // problem, set gedit_compatible to true.
+  const static bool gedit_compatible = false;
 
+  // Preview window show/hide. if you want to hide preview window set
+  // show_preview_window to false.
+  const static bool show_preview_window=true;
 
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    //Conigure scim-avro
+  // Don't change anything below this line, Or I will kick your ass.
 
-    /* 
-    gedit specific problem fix
-    If you want to fix gedit OI-kar, OU-kar problem, replace 
-    "const static bool gedit_compatible=false;" by 
-    "const static bool gedit_compatible=true;" (without the quotes)
-    */
-    const static bool gedit_compatible=false; 
+  AvroFactory *m_factory;
 
+  // for toolbar
+  PropertyList m_properties;
 
-    /*
-    Preview window show/hide
-    if you want to hide preview window, replace
-    "const static bool show_preview_window=true;"    by 
-    "const static bool show_preview_window=false;"   (without the quots)
-    */
-    const static bool show_preview_window=true;
-
-
-    //Don't change anything below this line, unless you know
-    //what you are doing 
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-
-
-
-    AvroFactory           *m_factory;
-
-    /* for toolbar */
-    PropertyList            m_properties;
-
-    void   select_candidate_no_direct          (unsigned int    item);
+  void select_candidate_no_direct(unsigned int item);
 
 public:
-    AvroInstance (AvroFactory   *factory,
-                  const String   &encoding,
-                  int             id = -1);
-    virtual ~AvroInstance ();
+  // FIXME: avoid default values for variables.
+  AvroInstance(AvroFactory *factory, const String &encoding, int id = -1);
+  virtual ~AvroInstance();
 
-    virtual bool process_key_event             (const KeyEvent& key);
-    virtual void move_preedit_caret            (unsigned int pos);
-    virtual void select_candidate              (unsigned int item);
-    virtual void update_lookup_table_page_size (unsigned int page_size);
-    virtual void lookup_table_page_up          (void);
-    virtual void lookup_table_page_down        (void);
-    virtual void reset                         (void);
-    virtual void focus_in                      (void);
-    virtual void focus_out                     (void);
-    virtual void trigger_property              (const String &property);
-
-public:
-
+  virtual bool process_key_event(const KeyEvent& key);
+  virtual void move_preedit_caret(unsigned int pos);
+  virtual void select_candidate(unsigned int item);
+  virtual void update_lookup_table_page_size(unsigned int page_size);
+  virtual void lookup_table_page_up(void);
+  virtual void lookup_table_page_down(void);
+  virtual void reset(void);
+  virtual void focus_in(void);
+  virtual void focus_out(void);
+  virtual void trigger_property(const String &property);
 
 private:
-    /* for candidates window */
-    CommonLookupTable       m_lookup_table;
-    std::vector<WideString>     m_lookup_table_labels;
+  // for candidates window
+  CommonLookupTable m_lookup_table;
+  std::vector<WideString> m_lookup_table_labels;
 
+  KeyEvent m_prev_key;
+  cEnglishToBangla Parser;
 
-    KeyEvent                m_prev_key;
-    cEnglishToBangla    Parser;
+  WideString PrevBanglaT;
+  String EnglishT;
+  bool BlockLast;
 
-    WideString PrevBanglaT;
-    String EnglishT;
-    bool BlockLast;
+  // Functions
+  void ParseAndSend();
+  void MyProcessVKeyDown(const KeyEvent &key, bool &Block);
+  void DoBackspace(bool &Block);
+  void AddStr(std::string Str);
+  void ResetDeadKey();
+  void Backspace(int Repeat);
 
-    /* Functions */
-    void ParseAndSend();
-    void MyProcessVKeyDown(const KeyEvent &key, bool &Block);
-    void DoBackspace(bool &Block);
-    void AddStr(std::string Str);
-    void ResetDeadKey();
-    void Backspace(int Repeat);
-
-    /* for candidates window */
-    void UpdateWindow (String t);
-    void HideWindow();
-
-
+  // for candidates window
+  void UpdateWindow(String t);
+  void HideWindow();
 };
+
 #endif /* __SCIM_AVRO_IMENGINE_H__ */
-/*
-vi:ts=4:nowrap:ai:expandtab
-*/
+

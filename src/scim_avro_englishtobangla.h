@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (C) OmicronLab (http://www.omicronlab.com)
  *
@@ -31,138 +30,141 @@
 using namespace scim;
 
 
-class cEnglishToBangla
-{
+class cEnglishToBangla {
 
 private:
-    String pEnglishText;
-    int ln; //Length of English string
-    int pos; //Position of processing at English string
-    WideString Rs; //Result string
-    bool AutoCorrect;
+  String pEnglishText;
+  int ln; // Length of English string
+  int pos; // Position of processing at English string
+  WideString Rs; // Result string
+  bool AutoCorrect;
 
+  // Bangla Numbers
+  WideString b_0;
+  WideString b_1;
+  WideString b_2;
+  WideString b_3;
+  WideString b_4;
+  WideString b_5;
+  WideString b_6;
+  WideString b_7;
+  WideString b_8;
+  WideString b_9;
 
-//Bangla Numbers
-    WideString b_0;
-    WideString b_1;
-    WideString b_2;
-    WideString b_3;
-    WideString b_4;
-    WideString b_5;
-    WideString b_6;
-    WideString b_7;
-    WideString b_8;
-    WideString b_9;
-//Bangla Vowels and Kars
-    WideString b_A;
-    WideString b_AA;
-    WideString b_AAkar;
-    WideString b_I;
-    WideString b_II;
-    WideString b_IIkar;
-    WideString b_Ikar;
-    WideString b_U;
-    WideString b_Ukar;
-    WideString b_UU;
-    WideString b_UUkar;
-    WideString b_RRI;
-    WideString b_RRIkar;
-    WideString b_E;
-    WideString b_Ekar;
-    WideString b_O;
-    WideString b_OI;
-    WideString b_OIkar;
-    WideString b_Okar;
-    WideString b_OU;
-    WideString b_OUkar;
-//Bangla Consonents
-    WideString b_Anushar;
-    WideString b_B;
-    WideString b_Bh;
-    WideString b_Bisharga;
-    WideString b_C;
-    WideString b_CH;
-    WideString b_Chandra;
-    WideString b_D;
-    WideString b_Dd;
-    WideString b_Ddh;
-    WideString b_Dh;
-    WideString b_G;
-    WideString b_GH;
-    WideString b_H;
-    WideString b_J;
-    WideString b_JH;
-    WideString b_K;
-    WideString b_KH;
-    WideString b_L;
-    WideString b_M;
-    WideString b_N;
-    WideString b_NGA;
-    WideString b_Nn;
-    WideString b_NYA;
-    WideString b_P;
-    WideString b_Ph;
-    WideString b_R;
-    WideString b_Rr;
-    WideString b_Rrh;
-    WideString b_S;
-    WideString b_Sh;
-    WideString b_Ss;
-    WideString b_T;
-    WideString b_Th;
-    WideString b_Tt;
-    WideString b_Tth;
-    WideString b_Y;
-    WideString b_Z;
-    WideString AssamRa;
-    WideString AssamVa;
-    WideString b_Khandatta;
-//Bangla Others
-    WideString b_Dari;
-    WideString b_Hasanta;
-    WideString b_Taka;
-    WideString ZWJ;
-    WideString ZWNJ;
-    WideString b_Nukta;
+  //Bangla Vowels and Kars
+  WideString b_A;
+  WideString b_AA;
+  WideString b_AAkar;
+  WideString b_I;
+  WideString b_II;
+  WideString b_IIkar;
+  WideString b_Ikar;
+  WideString b_U;
+  WideString b_Ukar;
+  WideString b_UU;
+  WideString b_UUkar;
+  WideString b_RRI;
+  WideString b_RRIkar;
+  WideString b_E;
+  WideString b_Ekar;
+  WideString b_O;
+  WideString b_OI;
+  WideString b_OIkar;
+  WideString b_Okar;
+  WideString b_OU;
+  WideString b_OUkar;
 
+  // Bangla Consonents
+  WideString b_Anushar;
+  WideString b_B;
+  WideString b_Bh;
+  WideString b_Bisharga;
+  WideString b_C;
+  WideString b_CH;
+  WideString b_Chandra;
+  WideString b_D;
+  WideString b_Dd;
+  WideString b_Ddh;
+  WideString b_Dh;
+  WideString b_G;
+  WideString b_GH;
+  WideString b_H;
+  WideString b_J;
+  WideString b_JH;
+  WideString b_K;
+  WideString b_KH;
+  WideString b_L;
+  WideString b_M;
+  WideString b_N;
+  WideString b_NGA;
+  WideString b_Nn;
+  WideString b_NYA;
+  WideString b_P;
+  WideString b_Ph;
+  WideString b_R;
+  WideString b_Rr;
+  WideString b_Rrh;
+  WideString b_S;
+  WideString b_Sh;
+  WideString b_Ss;
+  WideString b_T;
+  WideString b_Th;
+  WideString b_Tt;
+  WideString b_Tth;
+  WideString b_Y;
+  WideString b_Z;
+  WideString AssamRa;
+  WideString AssamVa;
+  WideString b_Khandatta;
 
-// Functions...
-    void		InitVars		();// Initialize Bangla character variables
-    void		CutText		(String inputEStr, String &outSIgnore, String &outMidMain, String &outEIgnore);
-    WideString  	MyConvert		();
-    void 		Dot			();
-    void 		smallO			();
-    void 		O			();
-    String 		CorrectCase		(String inputT);
-    void 		h			();
-    void 		s			();
-    void 		l			();
-    void 		R			();
-    void 		m			();
-    void 		b			();
-    void 		p			();
-    void 		d			();
-    void 		T			();
-    void 		J			();
-    void 		c			();
-    void 		n			();
-    void 		k			();
-    void 		g			();
-    bool 		Cnv			(String Compare, WideString IfTrue);
-    void 		AddRs			(WideString T);
-    void 		AddRsEx			(WideString T, int p);
-    String 		PrevT			();
-    String 		PrevTEx		(int Position);
-    String 		NextT			();
-    String 		NextTEx		(int Length, int skipstart);
-    bool 		Vowel			(String T);
-    bool 		Consonent		(String T);
-    bool 		Begining		();
+  // Bangla Others
+  WideString b_Dari;
+  WideString b_Hasanta;
+  WideString b_Taka;
+  WideString ZWJ;
+  WideString ZWNJ;
+  WideString b_Nukta;
 
+  // Functions
+  // Initialize Bangla character variables
+  void InitVars();
+  void CutText(String inputEStr,
+               String &outSIgnore,
+               String &outMidMain,
+               String &outEIgnore);
+  WideString MyConvert();
+  void Dot();
+  void smallO();
+  void O();
+  String CorrectCase(String inputT);
+  void h();
+  void s();
+  void l();
+  void R();
+  void m();
+  void b();
+  void p();
+  void d();
+  void T();
+  void J();
+  void c();
+  void n();
+  void k();
+  void g();
+  bool Cnv(String Compare, WideString IfTrue);
+  void AddRs(WideString T);
+  void AddRsEx(WideString T, int p);
+  String PrevT();
+  String PrevTEx(int Position);
+  String NextT();
+  String NextTEx(int Length, int skipstart);
+  bool Vowel(String T);
+  bool Consonent(String T);
+  bool Begining();
 
 public:
-    cEnglishToBangla	(); //constructor
-    WideString 	Convert		(const String EnglishT);
+  cEnglishToBangla(); // constructor
+  WideString Convert(const String EnglishT);
 };
 
 #endif /* __SCIM_AVRO_ENGLISHTOBANGLA_H__ */

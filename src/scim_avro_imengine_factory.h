@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (C) OmicronLab (http://www.omicronlab.com)
  *
@@ -31,38 +30,32 @@
 
 using namespace scim;
 
-class AvroFactory : public IMEngineFactoryBase
-{
-    String m_uuid;
+class AvroFactory : public IMEngineFactoryBase {
+  String m_uuid;
 
-    friend class AvroInstance;
+  friend class AvroInstance;
 
-    /* config */
-    ConfigPointer  m_config;
-    Connection     m_reload_signal_connection;
-
+  // config
+  ConfigPointer m_config;
+  Connection m_reload_signal_connection;
 
 public:
-    AvroFactory (const String &lang,
-                 const String &uuid,
-                 const ConfigPointer &config);
-    virtual ~AvroFactory ();
+  AvroFactory(
+      const String &lang, const String &uuid, const ConfigPointer &config);
+  virtual ~AvroFactory();
 
-    virtual WideString  get_name      () const;
-    virtual WideString  get_authors   () const;
-    virtual WideString  get_credits   () const;
-    virtual WideString  get_help      () const;
-    virtual String      get_uuid      () const;
-    virtual String      get_icon_file () const;
+  virtual WideString get_name() const;
+  virtual WideString get_authors() const;
+  virtual WideString get_credits() const;
+  virtual WideString get_help() const;
+  virtual String get_uuid() const;
+  virtual String get_icon_file() const;
 
-    virtual IMEngineInstancePointer create_instance (const String& encoding,
-            int id = -1);
+  virtual IMEngineInstancePointer create_instance(
+      const String& encoding, int id = -1);
 
 private:
-    void reload_config (const ConfigPointer &config);
+  void reload_config(const ConfigPointer &config);
 };
 
 #endif /* __SCIM_AVRO_IMENGINE_FACTORY_H__ */
-/*
-vi:ts=4:nowrap:ai:expandtab
-*/

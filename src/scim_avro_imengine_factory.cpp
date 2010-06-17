@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (C) OmicronLab (http://www.omicronlab.com)
  *
@@ -43,127 +42,103 @@
 
 static ConfigPointer _scim_config (0);
 
-extern "C"
-{
-    void scim_module_init (void)
-    {
-        bindtextdomain (GETTEXT_PACKAGE, SCIM_AVRO_LOCALEDIR);
-        bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+extern "C" {
+  void scim_module_init() {
+    bindtextdomain (GETTEXT_PACKAGE, SCIM_AVRO_LOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+  }
+
+  void scim_module_exit() {
+    _scim_config.reset();
+  }
+
+  uint32 scim_imengine_module_init(const ConfigPointer &config) {
+    SCIM_DEBUG_IMENGINE(1) << "Initialize AVRO Engine.\n";
+
+    _scim_config = config;
+    return 1;
+  }
+
+  IMEngineFactoryPointer scim_imengine_module_create_factory(uint32 engine) {
+    AvroFactory *factory = 0;
+
+    try {
+      factory = new AvroFactory(
+          String("bn_BD"),
+          String("1eb0bd1f-af66-4feb-a8b2-1899b8064a00"),
+          _scim_config);
+    } catch(...) {
+      delete factory;
+      factory = 0;
     }
 
-    void scim_module_exit (void)
-    {
-        _scim_config.reset ();
-    }
-
-    uint32 scim_imengine_module_init (const ConfigPointer &config)
-    {
-        SCIM_DEBUG_IMENGINE(1) << "Initialize AVRO Engine.\n";
-
-        _scim_config = config;
-
-        return 1;
-    }
-
-    IMEngineFactoryPointer scim_imengine_module_create_factory (uint32 engine)
-    {
-        AvroFactory *factory = 0;
-
-        try
-        {
-            factory = new AvroFactory (String ("bn_BD"),
-                                       String ("1eb0bd1f-af66-4feb-a8b2-1899b8064a00"),
-                                       _scim_config);
-        }
-        catch (...)
-        {
-            delete factory;
-            factory = 0;
-        }
-
-        return factory;
-    }
+    return factory;
+  }
 }
 
 
-AvroFactory::AvroFactory (const String &lang,
-                          const String &uuid,
-                          const ConfigPointer &config)
-        : m_uuid (uuid),
-        m_config (config)
-{
-    SCIM_DEBUG_IMENGINE(1) << "Create Avro Factory :\n";
-    SCIM_DEBUG_IMENGINE(1) << "  Lang : " << lang << "\n";
-    SCIM_DEBUG_IMENGINE(1) << "  UUID : " << uuid << "\n";
+AvroFactory::AvroFactory(
+    const String &lang, const String &uuid, const ConfigPointer &config)
+    : m_uuid(uuid), m_config(config) {
+  SCIM_DEBUG_IMENGINE(1) << "Create Avro Factory :\n";
+  SCIM_DEBUG_IMENGINE(1) << "  Lang : " << lang << "\n";
+  SCIM_DEBUG_IMENGINE(1) << "  UUID : " << uuid << "\n";
 
-    if (lang.length () >= 2)
-        set_languages (lang);
+  if (lang.length() >= 2) {
+    set_languages(lang);
+  }
 
-    // config
-    reload_config (m_config);
-    m_reload_signal_connection
-    = m_config->signal_connect_reload (slot (this, &AvroFactory::reload_config));
+  // config
+  reload_config(m_config);
+  m_reload_signal_connection =
+      m_config->signal_connect_reload(slot(this, &AvroFactory::reload_config));
 }
 
-AvroFactory::~AvroFactory ()
-{
-    m_reload_signal_connection.disconnect ();
+AvroFactory::~AvroFactory() {
+  m_reload_signal_connection.disconnect();
 }
 
-WideString
-AvroFactory::get_name () const
-{
-    return utf8_mbstowcs (String ("Avro Phonetic"));
+WideString AvroFactory::get_name() const {
+  return utf8_mbstowcs(String("Avro Phonetic"));
 }
 
-WideString
-AvroFactory::get_authors () const
-{
-    return WideString ();
+WideString AvroFactory::get_authors() const {
+  return WideString();
 }
 
-WideString
-AvroFactory::get_credits () const
-{
-    return WideString ();
+WideString AvroFactory::get_credits() const {
+  return WideString();
 }
 
-WideString
-AvroFactory::get_help () const
-{
-    String msg;
+WideString AvroFactory::get_help() const {
+  String msg;
 
-    msg="\nAvro Phonetic (Ver. 0.0.2)\n";
-    msg+="\n";
-    msg+="Developer:\n";
-    msg+="M M Rifat-Un-Nabi, Mehdi Hasan\n\n";
-    msg+="Copyright (C) OmicronLab\n";
-    msg+="http://www.omicronlab.com";
+  msg="\nAvro Phonetic (Ver. 0.0.2.1)\n";
+  msg+="\n";
+  msg+="Developer:\n";
+  msg+="M M Rifat-Un-Nabi, Mehdi Hasan\n\n";
+  msg+="Copyright (C) OmicronLab\n";
+  msg+="http://www.omicronlab.com";
 
-    return utf8_mbstowcs(msg);
+  return utf8_mbstowcs(msg);
 }
 
-String
-AvroFactory::get_uuid () const
-{
-    return m_uuid;
+String AvroFactory::get_uuid() const {
+  return m_uuid;
 }
 
-String
-AvroFactory::get_icon_file () const
-{
-    return String (SCIM_AVRO_ICON_FILE);
+String AvroFactory::get_icon_file() const {
+  return String(SCIM_AVRO_ICON_FILE);
 }
 
-IMEngineInstancePointer
-AvroFactory::create_instance (const String &encoding, int id)
-{
-    return new AvroInstance (this, encoding, id);
+IMEngineInstancePointer AvroFactory::create_instance(const String &encoding,
+                                                     int id) {
+  return new AvroInstance(this, encoding, id);
 }
 
-void
-AvroFactory::reload_config (const ConfigPointer &config)
-{
-    if (!config) return;
+void AvroFactory::reload_config(const ConfigPointer &config) {
+  if (!config) {
+    return;
+  }
 }
 
